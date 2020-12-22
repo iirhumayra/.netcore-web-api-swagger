@@ -32,6 +32,7 @@ namespace elearningWebAPI
         {
 
             services.AddControllers();
+
             services.AddMvc(option => option.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
@@ -44,6 +45,11 @@ namespace elearningWebAPI
 
             services.AddDbContext<elearningContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("ElearningDB")));
+
+            services.AddSwaggerGen(gen =>
+            {
+                gen.SwaggerDoc("v1.0", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "eLearning API", Version = "v1.0" });
+            });
 
         }
 
@@ -61,6 +67,12 @@ namespace elearningWebAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSwagger();
+
+            app.UseSwaggerUI( ui =>
+            {
+                ui.SwaggerEndpoint("/swagger/v1.0/swagger.json","Book Store API EndPoint");
+            });
 
             app.UseEndpoints(endpoints =>
             {
